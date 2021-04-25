@@ -1,6 +1,7 @@
 import socket
 import threading
-import sys as sys
+import sys
+
 
 # Server IP and port
 IP = "127.0.0.1"
