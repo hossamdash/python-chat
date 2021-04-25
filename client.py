@@ -1,6 +1,6 @@
 import socket
 import threading
-import sys as sys
+import sys
 
 # ANSI Colors
 class bcolors:
