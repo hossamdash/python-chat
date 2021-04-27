@@ -25,17 +25,19 @@ def broadcast(message, client_socket):
     # Send messages to all clients except to the original sender
     for client in clients.keys():
         if client is not client_socket:
-            client.send(message.encode('utf-8'))
+            client.send("{} : {}".format(clients[client], message).encode('utf-8'))
 
 # Function to be called per client
 def handle(client_socket):
     while True:
         message = client_socket.recv(1024).decode('utf-8')
+        print(message)
         broadcast(message, client_socket)
         if "!exit" in message:
             client_socket.close()
             broadcast('{} left!'.format(clients[client_socket]), client_socket)
             clients.pop(client_socket)
+            print(clients)
             sys.exit()
 
 # Receiving / Listening Function
@@ -46,7 +48,7 @@ def receive():
         print("Connected with {}".format(str(address)))
 
         # Request And Store Nickname
-        client_socket.send('Nickname?'.encode('utf-8'))
+        client_socket.send('/id'.encode('utf-8'))
         nickname = client_socket.recv(1024).decode('utf-8')
         # Add client info to the dictionary
         clients.update({client_socket: nickname})

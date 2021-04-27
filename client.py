@@ -32,7 +32,7 @@ class SocketChat():
             # Receive Message From Server
             # If 'Nickname?' Send Nickname
             message = self.client_socket.recv(1024).decode('utf-8')
-            if message == 'Nickname?':
+            if message == '/id':
                 self.client_socket.send(self.nickname.encode('utf-8'))
             else:
                 print(message)
@@ -43,18 +43,18 @@ class SocketChat():
     def write(self):
         while True:
             message_content = input('{}{} : {}'.format(bcolors.OKGREEN, self.nickname, bcolors.ENDC))
-            message = '\n{}{}{}: {}{}'.format(bcolors.OKBLUE, bcolors.BOLD, self.nickname, bcolors.ENDC, message_content)
-            self.client_socket.send(message.encode('utf-8'))
-            if "!exit" in message_content:
-                self.terminateConnection()
+            # message = '\n{}{}{}: {}{}'.format(bcolors.OKBLUE, bcolors.BOLD, self.nickname, bcolors.ENDC, message_content)
+            self.client_socket.send(message_content.encode('utf-8'))
+            if "/exit" in message_content:
+                SocketChat.terminateConnection(self)
 
 
     def beginConnection(self):
         self.client_socket.connect((self.IP, self.PORT))
-        receive_thread = threading.Thread(target=self.receive, args=(self,))
+        receive_thread = threading.Thread(target=SocketChat.receive, args=(self,))
         receive_thread.start()
 
-        write_thread = threading.Thread(target=self.write, args=(self,))
+        write_thread = threading.Thread(target=SocketChat.write, args=(self,))
         write_thread.start()
     
     def terminateConnection(self):
